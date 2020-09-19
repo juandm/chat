@@ -1,0 +1,40 @@
+{
+  "name": "jobsity-chat",
+  "version": "1.0.0",
+  "description": "Chat app",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juandm/chat.git"
+  },
+  "keywords": [
+    "Chat"
+  ],
+  "author": "Juan Mendez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juandm/chat/issues"
+  },
+  "homepage": "https://github.com/juandm/chat#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint -s"
+    }
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.3.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.1.2"
+  }
+}
