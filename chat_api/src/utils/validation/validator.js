@@ -7,6 +7,13 @@ function getCreateUserSchema() {
   });
 }
 
+function getLoginSchema() {
+  return joi.object().keys({
+    username: joi.string().required().max(100),
+    password: joi.string().required().max(20),
+  });
+}
+
 function mountValidationResponse(validationResult) {
   const { error, value } = validationResult;
   const response = { isValid: true, data: value };
@@ -31,4 +38,5 @@ function validate(schema, data) {
 module.exports = {
   validate,
   getCreateUserSchema,
+  getLoginSchema,
 };
