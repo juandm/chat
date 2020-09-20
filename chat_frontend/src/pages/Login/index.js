@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+
 
 import api from "../../services/api";
 import './styles.css';
@@ -31,11 +33,14 @@ const Login = () => {
       } else {
         const response = await api.post('users/login', { username, password });        
         const apiResponse = response.data;
+        const decoded = jwt_decode(apiResponse.data);
         localStorage.setItem('token', apiResponse.data);
+        localStorage.setItem('userId', decoded.sub);
         history.push('/chat');
       }
       
     } catch (error) {
+      console.log(error);
       if(error.isAxiosError) {
         const apiReponse = error.response.data;
          const errors = [];
