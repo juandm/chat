@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useHistory } from "react-router-dom";
 
 import api from "../../services/api";
 import './styles.css';
 
 const Login = () => {
+  const history = useHistory();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [validationErrors, setValidationErrors] = useState([]);
@@ -22,13 +24,15 @@ const Login = () => {
     try {
       if(!isLogin){
         const response = await api.post('users', { username, password });
-        console.log(response);
         alert('User created successfully');
         setIsLogin(true);
         setUsername('');
         setPassword('');
       } else {
-        alert('TODO: LOGIN')
+        const response = await api.post('users/login', { username, password });        
+        const apiResponse = response.data;
+        localStorage.setItem('token', apiResponse.data);
+        history.push('/chat');
       }
       
     } catch (error) {
