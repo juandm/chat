@@ -8,12 +8,16 @@ const server = http.createServer(app);
 const io = websocket(server);
 
 const bootstrapp = require('./setup');
+const loadRoutesV1 = require('./routes/v1'); // eslint-disable-line global-require
 
 bootstrapp().then(() => {
   const PORT = process.env.API_PORT || 8000;
 
   app.use(cors());
+  app.use(express.json());
+
   app.get('/', (req, res) => res.send({ message: 'Server OK.' }));
+  app.use('/api/v1', loadRoutesV1());
 
   io.on('connection', (socket) => {
     console.log('User connected');
