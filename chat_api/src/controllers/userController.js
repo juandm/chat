@@ -24,7 +24,27 @@ function createUserController({ validator, userService }) {
     }
   }
 
-  return { createUser };
+  async function login(req, res) {
+    try {
+      const schema = validator.getLoginSchema();
+      const { isValid, data } = validator.validate(schema, req.body);
+      if (!isValid) {
+        return onError(res, ResponseType.BAD_REQUEST, data);
+      }
+
+      const { username, password } = data;
+      const token = await userService.login(username, password);
+      if (!token) {
+        return onError(res, ResponseType.UNAUTHORIZED, 'username or password incorrect');
+      }
+      return onSuccess(res, ResponseType.CREATED, token);
+    } catch (error) {
+      console.log(error);
+      return onError(res, ResponseType.ERROR);
+    }
+  }
+
+  return { createUser, login };
 }
 
 module.exports = createUserController;
