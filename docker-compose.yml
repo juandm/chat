@@ -2,12 +2,19 @@ version: '2.4'
 services:
   api:
     build:
-      context: .
+      context: ./chat_api
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - '8000:8000'
+      - 8000:8000
+  front:
+    build:
+      context: ./chat_frontend
+    depends_on:
+      - api
+    ports:
+      - 80:80
   db:
     image: 'postgres:12.4'
     ports:
