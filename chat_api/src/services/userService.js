@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-function createUserService({ userRepository }) {
+function createUserService({ userRepository, chatroomRepository }) {
   async function createUser(username, password) {
     try {
       const response = { status: 'failed', message: '' };
@@ -43,7 +43,13 @@ function createUserService({ userRepository }) {
     }
     return token;
   }
-  return { createUser, login };
+
+  async function getUserChatrooms(userId) {
+    const chatrooms = await chatroomRepository.getUserChatrooms(userId);
+    return chatrooms;
+  }
+
+  return { createUser, login, getUserChatrooms };
 }
 
 module.exports = createUserService;
