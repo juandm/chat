@@ -1,0 +1,27 @@
+version: '2.4'
+services:
+  api:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '8000:8000'
+  db:
+    image: 'postgres:12.4'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: chat_db
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d chat_db -U dev']
+      interval: 50s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - chat-db-volume:/var/lib/postgresql/data
+volumes:
+  chat-db-volume:
