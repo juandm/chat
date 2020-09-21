@@ -36,6 +36,7 @@ const Login = () => {
         const decoded = jwt_decode(apiResponse.data);
         localStorage.setItem('token', apiResponse.data);
         localStorage.setItem('userId', decoded.sub);
+        localStorage.setItem('username', username);
         history.push('/chat');
       }
       

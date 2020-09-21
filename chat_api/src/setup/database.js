@@ -14,7 +14,7 @@ config.connection = {
   password: process.env.DB_PASSWORD,
 };
 
-config.debug = true;
+// config.debug = true;
 
 const connection = knex(knexStringcase(config));
 
