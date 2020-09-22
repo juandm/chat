@@ -37,14 +37,16 @@
 }
 
 .messages {
+  display: flex;
+  flex-direction: column-reverse;
   border-style: solid;
   border-width: 1px;
   width: 100%;
   height: 83%;
   padding: 30;
-  overflow: scroll;
-  flex-direction: row-reverse;
+  overflow: scroll;  
   background-color: dimgrey;
+  font-size: smaller;
 }
 
 .chat-message {
@@ -63,6 +65,19 @@
   margin: 15px;
   width: fit-content;
   margin-left: auto;
+  height: auto;
+}
+
+.message-timestamp { 
+  margin-left: auto;
+  font-size: x-small;
+}
+
+.chat-owner-name {
+  font-size: small;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 10px;
 }
 
 .typing-container {

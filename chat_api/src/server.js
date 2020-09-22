@@ -32,7 +32,6 @@ bootstrapp().then(() => {
     });
 
     socket.on('chat_message', async (message) => {
-      // const timestamp = new Date().toISOString();
       const { id, name } = message.selectedChatroom;
       const roomName = `${id}_${name.toLowerCase()}`;
       console.log(`Received chat message: ${JSON.stringify(message)}`);
