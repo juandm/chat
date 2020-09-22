@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-import api from '../../services/api';
+import roomService from '../../services/chatroomService';
+import userService from '../../services/userServices';
+import config from "../../utils/config";
 import "./styles.css";
 
 let socket = null;
@@ -12,35 +14,34 @@ const Chat = () => {
   const [chatrooms, setChatrooms] = useState([]);
   const [selectedChatroom, setSelectedChatroom] = useState({});
   const [message, setMessage] = useState('');
-  const [lastMessage, setLastMessage] = useState({});
-  const [messages, setMessages] = useState([
-    {id:1, content: 'hola'},
-    {id:2, content: 'hola'},
-    {id:3, content: 'como estas'},
-  ]);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket = io('localhost:7000');
+    socket = io(config.BASE_URL);
     socket.on('notification', (message) => {
-      console.log('server', message);
-      setLastMessage(message)
-      setMessages([...messages, message])
+      setMessages(msgs => [message, ...msgs])
     });
-  }, []);
+  }, [messages]);
 
+  // get chatrooms
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    api.get(`/users/${userId}/chatrooms`)
-      .then(apiResponse => {
-        const rooms = apiResponse.data.data;
-        setChatrooms(rooms);
-        setSelectedChatroom(rooms[0]);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    async function getData() {
+      const userId = localStorage.getItem('userId');
+      const rooms = await userService.getUserChatrooms(userId);
+      setChatrooms(rooms);
+      setSelectedChatroom(rooms[0]);
+      const roomMessages = await roomService.getChatroomMessages(rooms[0].id);
+      console.log('roomMessages', roomMessages);
+      setMessages(roomMessages);
+    }
+    getData();
   }, []);
   
+  // get las messages
+  useEffect(() => {
+    
+  }, []);
+
   async function handleChatroomSelection(e) {
     const selectedRoom = chatrooms.find(chatroom => chatroom.name.toLowerCase() === e.innerText.toLowerCase())
     setSelectedChatroom(selectedRoom);
@@ -56,10 +57,21 @@ const Chat = () => {
     socket.emit('chat_message', {
       selectedChatroom,
       userId,
+      username,
       content: message,
       token
     });
     setMessage('');
+  }
+
+  function getMessageOwner(message) {
+    const loggedUserId = parseInt(localStorage.getItem('userId'), 10);
+    const messageOwner = parseInt(message.userId, 10);
+    if (loggedUserId === messageOwner) {
+      return 'my-chat-message'
+    } else {
+      return 'chat-message'
+    };
   }
 
   return (    
@@ -85,13 +97,15 @@ const Chat = () => {
         </div>
         <div className="messages">
           {messages.map((message, idx) => (
-            <div className="chat-message" key={`${message.id}-${idx}`}>
+            <div className={getMessageOwner(message)} key={`${message.id}-${idx}`}>
+              {getMessageOwner(message) === 'chat-message' ? 
+                <span className="chat-owner-name">{message.username}</span>
+                : ''
+              }
               <p>{message.content}</p>
+              <span className="message-timestamp">{message.createdAt.split('T')[1].slice(0, 5)}</span>
             </div>
           ))}
-        <div className="my-chat-message">
-          <p>heeyy</p>
-        </div>
         </div>
         <div className="typing-container">
           <textarea 

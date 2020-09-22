@@ -48,7 +48,6 @@ function createUserController({ validator, userService }) {
     try {
       const { userId } = req.params;
       const chatrooms = await userService.getUserChatrooms(userId);
-      console.log(chatrooms);
       return onSuccess(res, ResponseType.SUCCESS, chatrooms);
     } catch (error) {
       console.log(error);

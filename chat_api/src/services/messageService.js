@@ -1,7 +1,7 @@
 function createMessageService({ messageRepository, chatroomRepository }) {
   async function saveMessage(message) {
     try {
-      const { selectedChatroom, userId, content } = message;
+      const { selectedChatroom, userId, content, username } = message;
       const userChatroom = await chatroomRepository.getUserChatroomsByIds(
         userId,
         selectedChatroom.id,
@@ -11,6 +11,9 @@ function createMessageService({ messageRepository, chatroomRepository }) {
         chatroomUsersId: userChatroom.id,
       };
       const newMessage = await messageRepository.saveMessage(data);
+      newMessage.userId = userId;
+      newMessage.chatRoomId = selectedChatroom.id;
+      newMessage.username = username;
       return { status: 'success', data: newMessage };
     } catch (error) {
       console.error(error);
