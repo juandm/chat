@@ -30,5 +30,14 @@ services:
       retries: 3
     volumes:
       - chat-db-volume:/var/lib/postgresql/data
+  message_broker:
+    image: rabbitmq:3-management
+    hostname: rabbit-mq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rabbit-volume:/var/lib/rabbitmq
 volumes:
   chat-db-volume:
+  rabbit-volume:

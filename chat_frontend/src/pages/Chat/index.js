@@ -45,7 +45,9 @@ const Chat = () => {
   async function handleChatroomSelection(e) {
     const selectedRoom = chatrooms.find(chatroom => chatroom.name.toLowerCase() === e.innerText.toLowerCase())
     setSelectedChatroom(selectedRoom);
-    socket.emit('join_room', selectedChatroom);
+    socket.emit('join_room', selectedRoom);
+    const roomMessages = await roomService.getChatroomMessages(selectedRoom.id);
+    setMessages(roomMessages || []);
   }
 
   async function handleMessageChange(e) {
