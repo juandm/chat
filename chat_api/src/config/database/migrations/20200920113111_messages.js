@@ -10,7 +10,7 @@ exports.up = (knex) => {
     table.timestamps('createdAt', true);
   });
 
-  return createMessages;
+  return createMessages.then(knex.seed.run());
 };
 
 exports.down = (knex) => {

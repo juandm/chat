@@ -12,6 +12,15 @@
         "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/chat_api/src/server.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Stock Bot",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chat_bot/src/index.js"
     }
   ]
 }
