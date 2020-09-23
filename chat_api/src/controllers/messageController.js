@@ -1,7 +1,7 @@
 function createMessageController({ messageService }) {
-  async function saveMessage(message) {
+  async function receiveMessage(message) {
     try {
-      const response = await messageService.saveMessage(message);
+      const response = await messageService.receiveMessage(message);
       return response;
     } catch (error) {
       console.log(error);
@@ -9,7 +9,7 @@ function createMessageController({ messageService }) {
     }
   }
 
-  return { saveMessage };
+  return { receiveMessage };
 }
 
 module.exports = createMessageController;

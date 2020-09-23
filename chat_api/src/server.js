@@ -4,6 +4,7 @@ const websocket = require('socket.io');
 const cors = require('cors');
 
 const bootstrapp = require('./setup');
+const { addListener } = require('./utils/messageReceivedEmitter');
 const loadRoutesV1 = require('./routes/v1');
 const container = require('./setup/dependencyContainer');
 
@@ -35,9 +36,20 @@ bootstrapp().then(() => {
       const { id, name } = message.selectedChatroom;
       const roomName = `${id}_${name.toLowerCase()}`;
       console.log(`Received chat message: ${JSON.stringify(message)}`);
-      const newMessage = await messageController.saveMessage(message);
-      io.to(roomName).emit('notification', newMessage.data);
+      const newMessage = await messageController.receiveMessage(message);
+      if (newMessage.data) {
+        io.to(roomName).emit('notification', newMessage.data);
+      }
     });
+  });
+
+  // handle events
+  addListener('bot_message_received', (data) => {
+    console.log('Bot response:', data);
+    const { id, name } = data.selectedChatroom;
+    const roomName = `${id}_${name.toLowerCase()}`;
+    io.to(roomName).emit('notification', data);
+    console.log(`emit message to room ${roomName}:`, data);
   });
 
   server.listen(PORT, () => console.log(`Server is running at port: ${PORT}`));

@@ -18,12 +18,16 @@ const Chat = () => {
 
   useEffect(() => {
     socket = io(config.BASE_URL);
-    socket.on('notification', (message) => {
-      setMessages(msgs => [message, ...msgs])
+    socket.on('notification', (receivedMessage) => {
+      if(receivedMessage.isBotMessage) {
+        receivedMessage.name = 'StockBot';
+        receivedMessage.userId = -1;
+      }      
+      setMessages(msgs => [receivedMessage, ...msgs])
     });
-  }, [messages]);
+  }, []);
 
-  // get chatrooms
+  // get chatrooms and last messages
   useEffect(() => {
     async function getData() {
       const userId = localStorage.getItem('userId');
@@ -37,10 +41,6 @@ const Chat = () => {
     getData();
   }, []);
   
-  // get las messages
-  useEffect(() => {
-    
-  }, []);
 
   async function handleChatroomSelection(e) {
     const selectedRoom = chatrooms.find(chatroom => chatroom.name.toLowerCase() === e.innerText.toLowerCase())
@@ -54,7 +54,7 @@ const Chat = () => {
     setMessage(e.target.value);
   }
 
-  async function handleSendMessage(e) {
+  async function handleSendMessage() {
     const token = localStorage.getItem('token');
     socket.emit('chat_message', {
       selectedChatroom,
@@ -75,6 +75,22 @@ const Chat = () => {
       return 'chat-message'
     };
   }
+
+  function buildMessageItem(message, idx) {
+    const owner = getMessageOwner(message);
+    const chatOwnerName = message.isBotMessage ? 'StockBot' : message.username;
+    return (
+      <div className={owner} key={`${message.id}-${idx}`}>
+        { 
+          owner === 'chat-message' ? 
+          <span className="chat-owner-name">{chatOwnerName}</span>
+          : ''
+        }
+        <p>{message.content}</p>
+        <span className="message-timestamp">{message.createdAt.split('T')[1].slice(0, 5)}</span>
+      </div>)
+  }
+
 
   return (    
     <div className="chat-container">
@@ -98,20 +114,11 @@ const Chat = () => {
           <h3>Messages of { selectedChatroom.name } chatroom</h3>
         </div>
         <div className="messages">
-          {messages.map((message, idx) => (
-            <div className={getMessageOwner(message)} key={`${message.id}-${idx}`}>
-              {getMessageOwner(message) === 'chat-message' ? 
-                <span className="chat-owner-name">{message.username}</span>
-                : ''
-              }
-              <p>{message.content}</p>
-              <span className="message-timestamp">{message.createdAt.split('T')[1].slice(0, 5)}</span>
-            </div>
-          ))}
+          {messages.map((message, idx) => (buildMessageItem(message, idx)))}
         </div>
         <div className="typing-container">
           <textarea 
-            onChange={(e) => handleMessageChange(e)}
+            onChange={handleMessageChange}
             value={message}
             ></textarea>
           <button onClick={handleSendMessage}>Send</button>

@@ -3,10 +3,14 @@ const stockService = require('../services/stockService');
 
 async function receiveMessage(channel, message) {
   console.log('[StockBot] Message arrived to the bot');
-  console.log('RequestId:', message.properties.correlationId);
   const data = JSON.parse(message.content.toString());
-  const responseMessage = stockService.processMessage(data);
-  if (responseMessage) {
+  const stockResponse = await stockService.processMessage(data);
+  data.content = stockResponse;
+  data.isBotMessage = true;
+  data.createdAt = new Date().toISOString();
+  console.log('Message sent to the chat from bot', JSON.stringify(data, null, 4));
+  if (stockResponse) {
+    channel.sendToQueue(process.env.RESPONSES_QUEUE, Buffer.from(JSON.stringify(data)));
     channel.ack(message);
   } else {
     console.log('Error replying message to the chat server');
@@ -15,8 +19,8 @@ async function receiveMessage(channel, message) {
 
 async function createBrokerConnection(url) {
   const connection = await amqp.connect(url);
-  const channel = await connection.createChannel();
-  return { connection, channel };
+  const consumerChannel = await connection.createChannel();
+  return { connection, consumerChannel };
 }
 
 async function setupConsumer(channel, queue, receiveCallback) {
@@ -28,8 +32,8 @@ async function setupConsumer(channel, queue, receiveCallback) {
 async function setup() {
   const url = process.env.MESSAGE_BROKER_URL;
   const incomeMessagesQueue = process.env.INCOME_QUEUE;
-  const { channel } = await createBrokerConnection(url);
-  await setupConsumer(channel, incomeMessagesQueue, receiveMessage);
+  const { consumerChannel } = await createBrokerConnection(url);
+  await setupConsumer(consumerChannel, incomeMessagesQueue, receiveMessage);
 }
 
 module.exports = { setup };

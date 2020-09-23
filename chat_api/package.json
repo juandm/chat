@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "amqplib": "^0.6.0",
     "awilix": "^4.2.6",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
