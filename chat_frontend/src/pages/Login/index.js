@@ -31,7 +31,7 @@ const Login = () => {
         setUsername('');
         setPassword('');
       } else {
-        const response = await api.post('users/login', { username, password });        
+        const response = await api.post('auth/login', { username, password });        
         const apiResponse = response.data;
         const decoded = jwt_decode(apiResponse.data);
         localStorage.setItem('token', apiResponse.data);
@@ -45,10 +45,12 @@ const Login = () => {
       if(error.isAxiosError) {
         const apiReponse = error.response.data;
          const errors = [];
-        Object.keys(apiReponse.data).forEach(errorKey => {
-           errors.push(apiReponse.data[errorKey]);
-        });
-        setValidationErrors(errors);
+         if(apiReponse.data){
+           Object.keys(apiReponse.data).forEach(errorKey => {
+              errors.push(apiReponse.data[errorKey]);
+           });
+           setValidationErrors(errors);
+         }
       } else {
         alert('Register error.')
       }

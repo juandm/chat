@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const passport = require('passport');
 const websocket = require('socket.io');
 const cors = require('cors');
 
@@ -8,18 +9,24 @@ const { addListener } = require('./utils/messageReceivedEmitter');
 const loadRoutesV1 = require('./routes/v1');
 const container = require('./setup/dependencyContainer');
 
-bootstrapp().then(() => {
+bootstrapp().then((bootstrapResult) => {
   const PORT = process.env.API_PORT || 8000;
 
   const app = express();
   const server = http.createServer(app);
   const io = websocket(server);
 
+  // Auth
+  const { authStrategies } = bootstrapResult;
+  console.log(authStrategies);
+  const jwtAuthMiddleware = passport.authenticate('jwt', { session: false });
+  passport.use('jwt', authStrategies.jwt);
+
   app.use(cors());
   app.use(express.json());
 
   app.get('/', (req, res) => res.send({ message: 'Server OK.' }));
-  app.use('/api/v1', loadRoutesV1());
+  app.use('/api/v1', loadRoutesV1({ jwtAuth: jwtAuthMiddleware }));
 
   const messageController = container.resolve('messageController');
 

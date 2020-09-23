@@ -8,4 +8,5 @@ module.exports = {
     tableName: 'knex_migrations',
     directory: './src/config/database/migrations',
   },
+  seeds: { directory: './src/config/database/seeds' },
 };
