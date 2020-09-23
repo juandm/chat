@@ -32,7 +32,8 @@ function createChatroomRepository({ db }) {
         'u.username',
         'u.id as userId',
       ])
-      .orderBy('m.createdAt', 'desc');
+      .orderBy('m.createdAt', 'desc')
+      .limit(50);
   }
 
   return { getUserChatrooms, getUserChatroomsByIds, getMessages };
