@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { FiSend } from "react-icons/fi";
 
 import roomService from '../../services/chatroomService';
 import userService from '../../services/userServices';
@@ -15,7 +16,8 @@ const Chat = () => {
   const [selectedChatroom, setSelectedChatroom] = useState({});
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  
   useEffect(() => {
     socket = io(config.BASE_URL);
     socket.on('notification', (receivedMessage) => {
@@ -43,28 +45,38 @@ const Chat = () => {
   
 
   async function handleChatroomSelection(e) {
+    // e.style.fontWeight = 'bold';
     const selectedRoom = chatrooms.find(chatroom => chatroom.name.toLowerCase() === e.innerText.toLowerCase())
     setSelectedChatroom(selectedRoom);
     socket.emit('join_room', selectedRoom);
     const roomMessages = await roomService.getChatroomMessages(selectedRoom.id);
     setMessages(roomMessages || []);
   }
-
+ 
+  async function handleSendMessage() {
+    if(message.length > 0 ) {
+      const token = localStorage.getItem('token');
+      socket.emit('chat_message', {
+        selectedChatroom,
+        userId,
+        username,
+        content: message,
+        token
+      });
+      setMessage('');
+    }
+  }
+  
   async function handleMessageChange(e) {
     setMessage(e.target.value);
+    setIsButtonDisabled(message.length === 0);
   }
 
-  async function handleSendMessage() {
-    const token = localStorage.getItem('token');
-    socket.emit('chat_message', {
-      selectedChatroom,
-      userId,
-      username,
-      content: message,
-      token
-    });
-    setMessage('');
-  }
+  const onKeyDownHandler = e => {
+    if (e.keyCode === 13) {
+      handleSendMessage();
+    }
+  };
 
   function getMessageOwner(message) {
     const loggedUserId = parseInt(localStorage.getItem('userId'), 10);
@@ -119,9 +131,10 @@ const Chat = () => {
         <div className="typing-container">
           <textarea 
             onChange={handleMessageChange}
+            onKeyDown={onKeyDownHandler}
             value={message}
             ></textarea>
-          <button onClick={handleSendMessage}>Send</button>
+          <button onClick={handleSendMessage} disabled={isButtonDisabled}><FiSend size={20} color="#FFF" /></button>
         </div>
       </section>
     </div>

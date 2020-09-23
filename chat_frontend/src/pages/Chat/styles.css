@@ -5,75 +5,80 @@
 }
 
 .chatrooms-container {
-  border-style: solid;
-  border-width: 1px;
+  border-style: none;
   width: 35%;
   height: 100%;
-  background-color: darkgray;
+  background-color: #EBF4FB;
 }
 
 .chatrooms-header {
-  border-style: solid;
-  border-width: 1px;
+  border-bottom: 1px solid;
   height: 8%;
-  background-color: darkgray;
+  background-color: #bcc5cc;
   padding: 10px;
+  color: #181F2E;
 }
 
 .messages-container {
-  border-style: solid;
-  border-width: 1px;
+  border-style: none;
   width: 75%;
   height: 100%;
-  background-color: darkgray;
 }
 
 .messages-header {
-  border-style: solid;
-  border-width: 1px;
+  border-bottom: 1px solid #bcc5cc;
   height: 8%;
-  background-color: darkgray;
+  background-color: #FFF;
   padding: 10px;
+  color: #181F2E;
 }
 
 .messages {
   display: flex;
   flex-direction: column-reverse;
-  border-style: solid;
-  border-width: 1px;
+  border-style: none;
   width: 100%;
   height: 83%;
-  padding: 30;
+  padding: 10px;
   overflow: scroll;  
-  background-color: dimgrey;
+  overflow-x: hidden;
+  background-color: #FFFFFF;
   font-size: smaller;
 }
 
 .chat-message {
-  padding: 10px;
+  padding: 10px 10px 3px 8px;
   border-radius: 10px;
   background-color: darkgrey;
+  min-width: 100px;
   margin: 15px;
   width: fit-content;
   margin-right: auto;
 }
 
 .my-chat-message {
-  padding: 10px;
+  padding: 10px 10px 3px 8px;
   border-radius: 10px;
-  background-color: burlywood;
-  margin: 15px;
+  background-color:#e6622f;
+  min-width: 100px;
   width: fit-content;
   margin-left: auto;
   height: auto;
+  margin-bottom: 15px;
 }
 
-.message-timestamp { 
-  margin-left: auto;
+.message-timestamp {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+  margin-left: 70%;
   font-size: x-small;
+
 }
 
 .chat-owner-name {
+  display: flex;
+  flex-direction: column;
   font-size: small;
   font-weight: bold;
   margin-top: 0px;
@@ -82,30 +87,41 @@
 
 .typing-container {
   display: flex;
-  border-style: solid;
+  border: 1px solid #bcc5cc;
   border-width: 1px;
-  border-color: blue;
-  width: 100%;
   margin-bottom: 0px;
+  height: max-content;
 }
 
 .typing-container textarea {
-  width: 85%;
+  width: 100%;
   margin-bottom: 0px;
+  color: #333;
+  resize: none;
 }
 
 .typing-container button {
-  width: 15%;
+  width: 5%;
   margin-bottom: 0px;
+  background-color: #e6622f;
+  /* background-color: #EE4141; */
 }
 
 .chatroom-item {
   height: 55px;
-  border-style: solid;
-  border-top: none;
-  border-width: 1px;
-  flex-direction: column;
-  align-items: center;
+  border-bottom: 1px solid #bcc5cc;
   padding: 15px;
-  
+  background-color: #EBF4FB;
+  color: #181F2E
+}
+
+
+.chatroom-item:hover {
+  filter: brightness(85%);
+  cursor: pointer;
+}
+
+.chatroom-item:active {
+  filter: brightness(85%);
+  font-weight: bold;
 }

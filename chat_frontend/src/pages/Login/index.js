@@ -14,7 +14,7 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   let buttonText = isLogin ? 'Login' : 'Register';
-  let hrefText = isLogin ? 'Don\t have an account yet? create one!' : 'Go to login';
+  let hrefText = isLogin ? 'Don\'t have an account yet? create one!' : 'Go to login';
 
   async function handleFormAction(e) {
     e.preventDefault();
