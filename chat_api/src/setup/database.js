@@ -24,7 +24,8 @@ async function setTypeParsers() {
 }
 
 async function runMigrations() {
-  return connection.migrate.latest();
+  await connection.migrate.latest();
+  return connection.seed.run();
 }
 
 async function setupDatabase() {

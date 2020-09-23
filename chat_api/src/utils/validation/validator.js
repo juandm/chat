@@ -3,7 +3,7 @@ const joi = require('joi');
 function getCreateUserSchema() {
   return joi.object().keys({
     username: joi.string().required().min(4).max(80),
-    password: joi.string().required().min(8).max(20),
+    password: joi.string().required().min(4).max(20),
   });
 }
 

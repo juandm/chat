@@ -14,6 +14,13 @@ function createUserService({ userRepository, chatroomRepository }) {
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(password, saltRounds);
       const createdUser = await userRepository.createUser(username, passwordHash);
+
+      // join default rooms
+      const rooms = await chatroomRepository.getAll();
+      await Promise.all(
+        rooms.map((room) => chatroomRepository.addUser(room.id, createdUser.id)),
+      );
+
       return { status: 'success', data: createdUser };
     } catch (error) {
       console.error(error);
@@ -49,6 +56,15 @@ function createUserService({ userRepository, chatroomRepository }) {
     return chatrooms;
   }
 
+  async function joinChatroom(chatroomId, userId) {
+    try {
+      const messages = await chatroomRepository.getMessages(chatroomId);
+      return { status: 'success', data: messages };
+    } catch (error) {
+      console.error(error);
+      return { status: 'failed', message: 'Error listing messages' };
+    }
+  }
   return { createUser, login, getUserChatrooms };
 }
 

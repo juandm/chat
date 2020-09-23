@@ -1,5 +1,6 @@
 const awilix = require('awilix');
 
+const authStrategies = require('./authStrategies');
 const validator = require('../utils/validation/validator');
 const { connection: db } = require('./database');
 
@@ -16,6 +17,7 @@ container.loadModules(
 );
 
 container.register({
+  authStrategies: awilix.asFunction(authStrategies),
   db: awilix.asValue(db),
   validator: awilix.asValue(validator),
 });

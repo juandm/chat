@@ -36,7 +36,21 @@ function createChatroomRepository({ db }) {
       .limit(50);
   }
 
-  return { getUserChatrooms, getUserChatroomsByIds, getMessages };
+  async function addUser(chatroomId, userId) {
+    return db('chatrooms_users').insert({ userId, chatroomId });
+  }
+
+  async function getAll() {
+    return db('chatrooms').select('*');
+  }
+
+  return {
+    getUserChatrooms,
+    getUserChatroomsByIds,
+    getMessages,
+    addUser,
+    getAll,
+  };
 }
 
 module.exports = createChatroomRepository;

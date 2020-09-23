@@ -10,9 +10,14 @@ function createUserRepository({ db }) {
     return db('users').where('username', username).first('*');
   }
 
+  async function getByUserId(id) {
+    return db('users').where('id', id).first('*');
+  }
+
   return {
     createUser,
     getByUserName,
+    getByUserId,
   };
 }
 
