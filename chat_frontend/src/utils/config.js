@@ -1,3 +1,3 @@
 export default Object.freeze({
-  BASE_URL: 'http://localhost:7000'
+  BASE_URL: 'http://localhost:8000'
 });

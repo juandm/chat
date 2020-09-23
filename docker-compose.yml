@@ -6,8 +6,22 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      message_broker:
+        condition: service_healthy
+    links: 
+      - message_broker
     ports:
       - 8000:8000
+    restart: always
+  bot:
+    build:
+      context: ./chat_bot
+    depends_on:
+      message_broker:
+        condition: service_healthy
+    links: 
+      - message_broker
+    restart: always
   front:
     build:
       context: ./chat_frontend
@@ -36,6 +50,11 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
     volumes:
       - rabbit-volume:/var/lib/rabbitmq
 volumes:
